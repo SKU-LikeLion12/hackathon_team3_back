@@ -6,6 +6,8 @@ import hackathon2024.hackathon2024_jh.domain.Expert;
 import hackathon2024.hackathon2024_jh.domain.Member;
 import hackathon2024.hackathon2024_jh.repository.ExpertRepository;
 import hackathon2024.hackathon2024_jh.repository.MemberRepository;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 
 @Service
@@ -34,19 +37,36 @@ public class MemberService {
     private final JwtUtility jwtUtility;
     private final JavaMailSenderImpl mailSender;
 
+    @Value("${jwt.secretKey}")
+    private String SECRET_KEY;
+    public String MemberOrExpert(String token){
+        try {
+            Claims claims = Jwts.parser()
+                    .setSigningKey(SECRET_KEY.getBytes(StandardCharsets.UTF_8))
+                    .parseClaimsJws(token)
+                    .getBody();
 
+            return claims.get("role", String.class);
+        } catch (Exception e) {
+            // 예외 처리 (예: 토큰이 유효하지 않은 경우)
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     public Member tokenToMember(String token) {
         return memberRepository.findByUserId(jwtUtility.validateToken(token).getSubject());
+    }
+
+    public Expert tokenToExpert(String token) {
+        return expertRepository.findByUserId(jwtUtility.validateToken(token).getSubject());
     }
 
     @Transactional
     public Member signUpGeneral(String userId, String password, String nickname,
                                String birth, String gender,
                                String phoneNum){
-        Member member = memberRepository.findByUserId(userId);
-        //이미 멤버가 있다는 것
-        if(member != null) return null;
+
         //없으면 회원가입 저장
         return  memberRepository.save(new Member(userId, password, nickname,
                 birth, gender, phoneNum));
@@ -56,8 +76,7 @@ public class MemberService {
 
     @Transactional
     public Expert signUpExpert(MemberDTO.ExpertMemberCreateRequest request, MailDTO mailDTO) throws MessagingException, IOException {
-        Expert expert = expertRepository.findByUserId(request.getUserId());
-        if (expert != null) return null;
+
 
 
         try {
@@ -84,9 +103,9 @@ public class MemberService {
             e.printStackTrace();
         }
 
-        expert = new Expert(request.getUserId(), request.getPassword(), request.getNickname(),
+        Expert expert = new Expert(request.getUserId(), request.getPassword(), request.getNickname(),
                 request.getBirth(), request.getGender(), request.getPhoneNum(),
-                request.getImage().getOriginalFilename(), false);
+                request.getImage().getOriginalFilename(), request.getEmail(), false);
         expertRepository.save(expert);
 
         return expert;
@@ -104,11 +123,14 @@ public class MemberService {
 
     public String login(String userId, String passwd){
         Member member = memberRepository.findByUserId(userId);
+        Expert expert = expertRepository.findByUserId(userId);
         if(member != null && member.checkPassword(passwd)){
-            return jwtUtility.generateJwtToken(member.getUserId());
+            return jwtUtility.generateJwtToken(member.getUserId(), "General");
         }
-
-        return "로그인 완료";
+        if(expert != null && expert.checkPassword(passwd)){
+            return jwtUtility.generateJwtToken(expert.getUserId(), "Expert");
+        }
+        return "아이디 혹은 비밀번호가 일치하지 않습니다.";
     }
 
 }

@@ -1,11 +1,53 @@
 Hackathon2024
 
-CREATE TABLE User (
+CREATE TABLE member (
     Id INT AUTO_INCREMENT PRIMARY KEY,
-    userId VARCHAR(255) NOT NULL,
+    user_id VARCHAR(255) NOT NULL,
     nickname VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
-    birthYear INT NOT NULL,
+    birth INT NOT NULL,
     gender VARCHAR(50),
     phoneNum VARCHAR(20)
 );
+
+
+
+
+
+CREATE TABLE `expert` (
+   `is_expert` bit(1) DEFAULT NULL,
+   `id` bigint NOT NULL,
+   `birth` varchar(255) DEFAULT NULL,
+   `gender` varchar(255) DEFAULT NULL,
+   `image` varchar(255) DEFAULT NULL,
+   `nickname` varchar(255) DEFAULT NULL,
+   `password` varchar(255) DEFAULT NULL,
+   `phone_num` varchar(255) DEFAULT NULL,
+   `user_id` varchar(255) DEFAULT NULL,
+   PRIMARY KEY (`id`),
+   UNIQUE KEY `UKtp5k3xo4s34soe783vu4ha79s` (`user_id`)
+ )
+
+ALTER TABLE expert
+ADD COLUMN email varchar(255);
+
+ALTER TABLE expert
+ADD COLUMN create_time DATE,
+ADD COLUMN update_time DATE;
+
+CREATE TABLE `post` (
+   `Id` bigint NOT NULL AUTO_INCREMENT,
+   `category` varchar(255) DEFAULT NULL,
+   `title` varchar(255) NOT NULL,
+   `content` text NOT NULL,
+   `like_size` int DEFAULT '0',
+   `comment_size` int DEFAULT '0',
+   `save_size` int DEFAULT '0',
+   `writer_id` bigint DEFAULT NULL,
+   `is_expert_post` tinyint(1) DEFAULT NULL,
+   `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
+   `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+   PRIMARY KEY (`Id`),
+   KEY `writer_id` (`writer_id`),
+   CONSTRAINT `post_ibfk_1` FOREIGN KEY (`writer_id`) REFERENCES `member` (`id`) ON DELETE SET NULL
+ )

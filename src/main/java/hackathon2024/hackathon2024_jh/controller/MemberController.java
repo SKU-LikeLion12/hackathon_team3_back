@@ -6,6 +6,8 @@ import hackathon2024.hackathon2024_jh.DTO.MailDTO;
 import hackathon2024.hackathon2024_jh.DTO.MessageDTO;
 import hackathon2024.hackathon2024_jh.domain.Expert;
 import hackathon2024.hackathon2024_jh.domain.Member;
+import hackathon2024.hackathon2024_jh.repository.ExpertRepository;
+import hackathon2024.hackathon2024_jh.repository.MemberRepository;
 import hackathon2024.hackathon2024_jh.service.MemberService;
 import hackathon2024.hackathon2024_jh.service.MessageService;
 import jakarta.mail.MessagingException;
@@ -23,23 +25,34 @@ import java.io.IOException;
 public class MemberController {
     private final MessageService messageService;
     private final MemberService memberService;
-
+    private final MemberRepository memberRepository;
+    private final ExpertRepository expertRepository;
 
     @PostMapping("/signup/general")
     public String signUpGeneral(@RequestBody GeneralMemberCreateRequest request) {
-        Member member = memberService.signUpGeneral(request.getUserId(), request.getPassword(), request.getNickname(),
+        memberService.signUpGeneral(request.getUserId(), request.getPassword(), request.getNickname(),
                                 request.getBirth(), request.getGender(),
                                 request.getPhoneNum());
-        if(member==null) {return "이미 존재하는 아이디 입니다.";}
+
         String token = memberService.login(request.getUserId(), request.getPassword());
 
         return token;
+    }
+    @GetMapping("/signup/checkId/{checkId}")
+    public String signUpCheckId(@PathVariable("checkId") String checkId) {
+        Member memberGeneral = memberRepository.findByUserId(checkId);
+        Expert memberExpert = expertRepository.findByUserId(checkId);
+        //이미 멤버가 있다는 것
+        if(memberGeneral != null || memberExpert!=null) return "이미 존재하는 아이디 입니다.";
+        return "사용 가능한 아이디입니다.";
     }
 
     @PostMapping("/login")
     public String login(@RequestBody MemberLoginRequest request){
         return memberService.login(request.getUserId(),request.getPassword());
     }
+    @Value("${spring.mail.username}")
+    private String mailFrom;
 
     @PostMapping("/signup/Expert")
     public String signUpExpert(@RequestPart("userId") String userId,
@@ -54,7 +67,7 @@ public class MemberController {
 
 
         MailDTO mailDTO = new MailDTO();
-        mailDTO.setFrom("kkeujeogim12@gmail.com"); // 발신자 이메일 주소 설정 필요
+        mailDTO.setFrom(mailFrom); // 발신자 이메일 주소 설정 필요
         mailDTO.setTo(email); // 수신자 이메일 주소 설정 필요
         // ExpertMemberCreateRequest 객체 설정
         ExpertMemberCreateRequest request = new ExpertMemberCreateRequest();
@@ -66,15 +79,13 @@ public class MemberController {
         request.setEmail(email);
         request.setBirth(birth);
         request.setImage(image);
-        Expert expert = memberService.signUpExpert(request, mailDTO);
-        if (expert == null) {
-            return "이미 존재하는 아이디 입니다.";
-        }
+        memberService.signUpExpert(request, mailDTO);
+
 
         return "승인 요청 완료";
     }
 
-    @GetMapping("/check/sendSMS")
+    @PostMapping("/check/sendSMS")
     public String sendSMS(@RequestBody MessageDTO.RequestMessage message) {
         //return messageService.createRandomNumber();
         return messageService.sendSMS(message.getPhoneNumber());
