@@ -12,4 +12,6 @@ public interface ExpertRepository {
 
     List<Expert> findAll();
     void changeIsExpert(Expert expert, Boolean isExpert);
+
+    Boolean getIsExpert(String userId);
 }

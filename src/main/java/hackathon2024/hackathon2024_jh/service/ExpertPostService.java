@@ -23,7 +23,7 @@ public class ExpertPostService {
     @Transactional
     public ExpertPost saveExpertPost(String title, String content, String token) {
         Expert expert = memberService.tokenToExpert(token);
-        ExpertPost expertPost = new ExpertPost(title, content, expert, null, 0L, 0L, 0L);
+        ExpertPost expertPost = new ExpertPost(title, content, expert, null);
         return postExpertRepository.save(expertPost);
     }
     public List<ExpertPost> findAll() {

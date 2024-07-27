@@ -1,12 +1,10 @@
 package hackathon2024.hackathon2024_jh.repository;
 
 import hackathon2024.hackathon2024_jh.domain.Expert;
-import hackathon2024.hackathon2024_jh.domain.Member;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -49,5 +47,13 @@ public class JpaExpertRepository implements ExpertRepository{
             em.flush();
             em.clear();
         }
+    }
+
+    @Override
+    public Boolean getIsExpert(String userId){
+        Boolean isExpert = em.createQuery("select e.isExpert from Expert e where e.userId=:userId", Boolean.class)
+                .setParameter("userId", userId)
+                .getSingleResult();
+        return isExpert;
     }
 }

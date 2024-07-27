@@ -62,6 +62,15 @@ public class MemberService {
         return expertRepository.findByUserId(jwtUtility.validateToken(token).getSubject());
     }
 
+    public Member MemberfindById(Long id){
+        return memberRepository.findById(id);
+    }
+
+    public Expert ExpertfindById(Long id){
+        return expertRepository.findById(id);
+    }
+
+
     @Transactional
     public Member signUpGeneral(String userId, String password, String nickname,
                                String birth, String gender,
@@ -124,12 +133,20 @@ public class MemberService {
     public String login(String userId, String passwd){
         Member member = memberRepository.findByUserId(userId);
         Expert expert = expertRepository.findByUserId(userId);
+
         if(member != null && member.checkPassword(passwd)){
             return jwtUtility.generateJwtToken(member.getUserId(), "General");
         }
         if(expert != null && expert.checkPassword(passwd)){
-            return jwtUtility.generateJwtToken(expert.getUserId(), "Expert");
+            Boolean isExpert = expertRepository.getIsExpert(userId);
+            if(isExpert){
+                return jwtUtility.generateJwtToken(expert.getUserId(), "Expert");
+            }
+            else{
+                return "전문가 자격 승인 요청이 처리되지 않았습니다.";
+            }
         }
+
         return "아이디 혹은 비밀번호가 일치하지 않습니다.";
     }
 

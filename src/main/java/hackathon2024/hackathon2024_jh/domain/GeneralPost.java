@@ -9,16 +9,16 @@ import org.hibernate.annotations.OnDeleteAction;
 @Entity
 @NoArgsConstructor
 @Getter
-public class ExpertPost extends Post {
+public class GeneralPost extends Post {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "writer_Id")
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private Expert writer;
+    private Member writer;
 
-    private Boolean isExpertPost = true;
+    private Boolean isExpertPost = false;
 
-    public ExpertPost(String title, String content, Expert writer, String category) {
+    public GeneralPost(String title, String content, Member writer, String category) {
         super(title, category, content);
         this.writer = writer;
     }

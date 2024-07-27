@@ -38,6 +38,7 @@ public class MemberController {
 
         return token;
     }
+
     @GetMapping("/signup/checkId/{checkId}")
     public String signUpCheckId(@PathVariable("checkId") String checkId) {
         Member memberGeneral = memberRepository.findByUserId(checkId);
@@ -51,6 +52,7 @@ public class MemberController {
     public String login(@RequestBody MemberLoginRequest request){
         return memberService.login(request.getUserId(),request.getPassword());
     }
+
     @Value("${spring.mail.username}")
     private String mailFrom;
 
@@ -91,7 +93,7 @@ public class MemberController {
         return messageService.sendSMS(message.getPhoneNumber());
     }
 
-    @GetMapping("/check/certification")
+    @PostMapping("/check/certification")
     public String sendSMS(@RequestBody MessageDTO.CertificationNum certification) {
         return messageService.verifySms(certification);
 

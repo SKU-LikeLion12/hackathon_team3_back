@@ -11,32 +11,43 @@ import java.time.LocalDateTime;
 @Getter
 public class Comment {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "writer_id")
-    private Member member;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
-    private ExpertPost post;
-
     private String content;
-    private LocalDateTime createDate;
-    private LocalDateTime updateDate;
+    private Boolean isFix = false;
+    private LocalDateTime createDate = LocalDateTime.now();
+    private LocalDateTime updateDate = LocalDateTime.now();
 
-    public Comment(Member writer, ExpertPost post, String content) {
-        this.member = writer;
+    @Column(name = "writer_type")
+    @Enumerated(EnumType.STRING)
+    private WriterType writerType;
+
+    @Column(name = "writer_id")
+    private Long writerId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id", nullable = false)
+    private Post post;
+
+    public Comment(Member member, Post post, String content) {
+        this.writerType = WriterType.MEMBER;
+        this.writerId = member.getId();
         this.post = post;
         this.content = content;
-        this.createDate = LocalDateTime.now();
-        this.updateDate = this.createDate;
     }
 
-    public void updateComment(String content){
+    public Comment(Expert expert, Post post, String content) {
+        this.writerType = WriterType.EXPERT;
+        this.writerId = expert.getId();
+        this.post = post;
+        this.content = content;
+    }
+
+    public void updateComment(String content) {
         this.content = content;
         this.updateDate = LocalDateTime.now();
     }
-
 }
+
+

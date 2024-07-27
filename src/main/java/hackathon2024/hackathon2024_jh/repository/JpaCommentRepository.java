@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 @Repository
 @RequiredArgsConstructor
-public class JpaCommentRepository {
+public class JpaCommentRepository implements CommentRepository{
     private final EntityManager em;
     public Comment findById(Long id) {
         return em.find(Comment.class, id);
@@ -24,18 +24,5 @@ public class JpaCommentRepository {
         em.remove(comment);
     }
 
-    public List<Comment> findArticleComments(ExpertPost expertPost) {
-        return em.createQuery("select a from Comment a where a.post = :ar", Comment.class)
-                .setParameter("ar", expertPost).getResultList();
-    }
 
-    public List<Comment> findMemberComments(Member member) {
-        return em.createQuery("select a from Comment a where a.member = :m", Comment.class)
-                .setParameter("m", member).getResultList();
-    }
-
-    public List<ExpertPost> findMemberCommentsArticle(Member member) {
-        return em.createQuery("select DISTINCT c.post from Comment c where c.member = :m", ExpertPost.class)
-                .setParameter("m", member).getResultList();
-    }
 }
