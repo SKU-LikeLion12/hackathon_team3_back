@@ -11,4 +11,6 @@ public interface CommentRepository {
     public void deleteComment(Comment comment);
 
     List<Comment> findPostsComments(Post Post);
+
+    Comment findFirstExpertComment(Post post);
 }

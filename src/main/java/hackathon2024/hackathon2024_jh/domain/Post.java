@@ -41,4 +41,8 @@ public abstract class Post {
         this.content = content;
         this.updateTime = LocalDateTime.now();
     }
+
+    public void setLikeSize(Long likeSize) {
+        this.likeSize = likeSize;
+    }
 }

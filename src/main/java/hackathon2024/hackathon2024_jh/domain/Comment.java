@@ -15,7 +15,7 @@ public class Comment {
     private long id;
 
     private String content;
-    private Boolean isFix = false;
+    private Boolean isFix;
     private LocalDateTime createDate = LocalDateTime.now();
     private LocalDateTime updateDate = LocalDateTime.now();
 
@@ -30,23 +30,27 @@ public class Comment {
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
-    public Comment(Member member, Post post, String content) {
-        this.writerType = WriterType.MEMBER;
-        this.writerId = member.getId();
+    public Comment(User user, Post post, String content) {
+        if (user instanceof Member) {
+            this.writerType = WriterType.MEMBER; // 'MEMBER'
+        } else if (user instanceof Expert) {
+            this.writerType = WriterType.EXPERT; // 'EXPERT'
+        }
+        this.writerId = user.getId();
         this.post = post;
         this.content = content;
+        this.isFix = false;
     }
 
-    public Comment(Expert expert, Post post, String content) {
-        this.writerType = WriterType.EXPERT;
-        this.writerId = expert.getId();
-        this.post = post;
-        this.content = content;
-    }
+
 
     public void updateComment(String content) {
         this.content = content;
         this.updateDate = LocalDateTime.now();
+    }
+
+    public void fixComment() {
+        this.isFix = true;
     }
 }
 

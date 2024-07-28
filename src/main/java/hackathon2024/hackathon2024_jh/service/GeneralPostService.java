@@ -1,9 +1,6 @@
 package hackathon2024.hackathon2024_jh.service;
 
-import hackathon2024.hackathon2024_jh.domain.Expert;
-import hackathon2024.hackathon2024_jh.domain.ExpertPost;
-import hackathon2024.hackathon2024_jh.domain.GeneralPost;
-import hackathon2024.hackathon2024_jh.domain.Member;
+import hackathon2024.hackathon2024_jh.domain.*;
 import hackathon2024.hackathon2024_jh.repository.ExpertRepository;
 import hackathon2024.hackathon2024_jh.repository.PostExpertRepository;
 import hackathon2024.hackathon2024_jh.repository.PostGeneralRepository;

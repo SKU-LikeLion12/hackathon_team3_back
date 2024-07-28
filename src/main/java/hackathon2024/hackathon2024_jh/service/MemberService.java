@@ -4,6 +4,7 @@ import hackathon2024.hackathon2024_jh.DTO.MailDTO;
 import hackathon2024.hackathon2024_jh.DTO.MemberDTO;
 import hackathon2024.hackathon2024_jh.domain.Expert;
 import hackathon2024.hackathon2024_jh.domain.Member;
+import hackathon2024.hackathon2024_jh.domain.User;
 import hackathon2024.hackathon2024_jh.repository.ExpertRepository;
 import hackathon2024.hackathon2024_jh.repository.MemberRepository;
 import io.jsonwebtoken.Claims;
@@ -62,13 +63,14 @@ public class MemberService {
         return expertRepository.findByUserId(jwtUtility.validateToken(token).getSubject());
     }
 
-    public Member MemberfindById(Long id){
+    public User UserfindById(Long id){
+        if (memberRepository.findById(id)==null){
+            return expertRepository.findById(id);
+        }
         return memberRepository.findById(id);
     }
 
-    public Expert ExpertfindById(Long id){
-        return expertRepository.findById(id);
-    }
+
 
 
     @Transactional

@@ -1,9 +1,6 @@
 package hackathon2024.hackathon2024_jh.DTO;
 
-import hackathon2024.hackathon2024_jh.domain.Comment;
-import hackathon2024.hackathon2024_jh.domain.Expert;
-import hackathon2024.hackathon2024_jh.domain.Member;
-import hackathon2024.hackathon2024_jh.domain.WriterType;
+import hackathon2024.hackathon2024_jh.domain.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -20,28 +17,25 @@ public class CommentDTO {
         private String writer;
         private String writerId;
         private String role;
+        private Boolean isFix;
 
         // Constructor for CommentResponse based on Member
-        public CommentResponse(Comment comment, Member member) {
+        public CommentResponse(Comment comment, User user) {
             this.id = comment.getId();
+            this.isFix = comment.getIsFix();
             this.content = comment.getContent();
             this.createDate = comment.getCreateDate();
-            this.role = WriterType.MEMBER.name(); // 'MEMBER'
-            this.writer = member.getNickname();
-            this.writerId = member.getUserId();
+            if (user instanceof Member) {
+                this.role = WriterType.MEMBER.name(); // 'MEMBER'
+            } else if (user instanceof Expert) {
+                this.role = WriterType.EXPERT.name(); // 'EXPERT'
+            }
+            this.writer = user.getNickname();
+            this.writerId = user.getUserId();
             this.isUpdate = !comment.getCreateDate().equals(comment.getUpdateDate());
         }
 
-        // Constructor for CommentResponse based on Expert
-        public CommentResponse(Comment comment, Expert expert) {
-            this.id = comment.getId();
-            this.content = comment.getContent();
-            this.createDate = comment.getCreateDate();
-            this.role = WriterType.EXPERT.name(); // 'EXPERT'
-            this.writer = expert.getNickname();
-            this.writerId = expert.getUserId();
-            this.isUpdate = !comment.getCreateDate().equals(comment.getUpdateDate());
-        }
+
     }
 
     @Data

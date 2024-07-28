@@ -1,16 +1,15 @@
 package hackathon2024.hackathon2024_jh.DTO;
 
-import hackathon2024.hackathon2024_jh.domain.Expert;
 import hackathon2024.hackathon2024_jh.domain.ExpertPost;
 import hackathon2024.hackathon2024_jh.domain.GeneralPost;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class PostDTO {
+
     @Data
     public static class RequestPostExpert {
         private String title;
@@ -27,11 +26,12 @@ public class PostDTO {
         private Long commentSize;
         private Long likeSize;
         private Long saveSize;
-        private Boolean IsExpertPost;
+        private Boolean isExpertPost;
         private LocalDateTime createDate;
+        private boolean isLike;
         private boolean isChange;
 
-        public ResponsePostExpert(ExpertPost expertPost) {
+        public ResponsePostExpert(ExpertPost expertPost, Boolean isLike) {
             this.id = expertPost.getId();
             this.title = expertPost.getTitle();
             this.content = expertPost.getContent();
@@ -39,13 +39,10 @@ public class PostDTO {
             this.commentSize = expertPost.getCommentSize();
             this.likeSize = expertPost.getLikeSize();
             this.saveSize = expertPost.getSaveSize();
-            this.IsExpertPost = expertPost.getIsExpertPost();
+            this.isExpertPost = expertPost.getIsExpertPost();
             this.createDate = expertPost.getCreateTime();
-            if(expertPost.getCreateTime().equals(expertPost.getUpdateTime())){
-                this.isChange = false;
-            }else{
-                this.isChange = true;
-            }
+            this.isChange = !expertPost.getCreateTime().equals(expertPost.getUpdateTime());
+            this.isLike = isLike;
         }
     }
 
@@ -77,11 +74,12 @@ public class PostDTO {
         private Long commentSize;
         private Long likeSize;
         private Long saveSize;
-        private Boolean IsExpertPost;
+        private Boolean isExpertPost;
         private LocalDateTime createDate;
+        private boolean isLike;
         private boolean isChange;
 
-        public ResponsePostGeneral(GeneralPost generalPost) {
+        public ResponsePostGeneral(GeneralPost generalPost, Boolean isLike) {
             this.id = generalPost.getId();
             this.title = generalPost.getTitle();
             this.content = generalPost.getContent();
@@ -90,13 +88,10 @@ public class PostDTO {
             this.commentSize = generalPost.getCommentSize();
             this.likeSize = generalPost.getLikeSize();
             this.saveSize = generalPost.getSaveSize();
-            this.IsExpertPost = generalPost.getIsExpertPost();
+            this.isExpertPost = generalPost.getIsExpertPost();
             this.createDate = generalPost.getCreateTime();
-            if(generalPost.getCreateTime().equals(generalPost.getUpdateTime())){
-                this.isChange = false;
-            }else{
-                this.isChange = true;
-            }
+            this.isChange = !generalPost.getCreateTime().equals(generalPost.getUpdateTime());
+            this.isLike = isLike;
         }
     }
 
@@ -109,7 +104,12 @@ public class PostDTO {
     }
 
     @Data
-    public static class RemovePost{
+    public static class RemovePost {
+        private String token;
+    }
+
+    @Data
+    public static class isLogin {
         private String token;
     }
 }
