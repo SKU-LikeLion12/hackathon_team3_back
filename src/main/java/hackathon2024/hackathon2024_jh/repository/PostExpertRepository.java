@@ -8,6 +8,6 @@ public interface PostExpertRepository {
     ExpertPost save(ExpertPost expertPost);
     List<ExpertPost> findAll();
     ExpertPost findById(Long id);
-    ExpertPost update(ExpertPost expertPost);
+
     void delete(ExpertPost expertPost);
 }

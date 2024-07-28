@@ -29,13 +29,9 @@ public class JpaExpertPostRepository implements PostExpertRepository {
         return em.find(ExpertPost.class, id);
     }
 
-    @Override
-    public ExpertPost update(ExpertPost expertPost) {
-        return null;
-    }
 
     @Override
     public void delete(ExpertPost expertPost) {
-
+        em.remove(expertPost);
     }
 }

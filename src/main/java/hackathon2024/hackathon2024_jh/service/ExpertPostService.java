@@ -2,6 +2,8 @@ package hackathon2024.hackathon2024_jh.service;
 
 import hackathon2024.hackathon2024_jh.domain.Expert;
 import hackathon2024.hackathon2024_jh.domain.ExpertPost;
+import hackathon2024.hackathon2024_jh.domain.GeneralPost;
+import hackathon2024.hackathon2024_jh.domain.Member;
 import hackathon2024.hackathon2024_jh.repository.ExpertRepository;
 import hackathon2024.hackathon2024_jh.repository.MemberRepository;
 import hackathon2024.hackathon2024_jh.repository.PostExpertRepository;
@@ -32,5 +34,24 @@ public class ExpertPostService {
 
     public ExpertPost findPost(Long id) {
         return postExpertRepository.findById(id);
+    }
+
+    @Transactional
+    public ExpertPost updatePost(Long id, String title, String content, String token) {
+        ExpertPost expertPost = postExpertRepository.findById(id);
+        Expert expert = memberService.tokenToExpert(token);
+        if(expert == expertPost.getWriter()){
+            expertPost.update(title, content);
+        }
+        return expertPost;
+    }
+
+    @Transactional
+    public void deletePost(Long id, String token) {
+        ExpertPost expertPost = postExpertRepository.findById(id);
+        Expert expert = memberService.tokenToExpert(token);
+        if(expert == expertPost.getWriter()) {
+            postExpertRepository.delete(expertPost);
+        }
     }
 }
