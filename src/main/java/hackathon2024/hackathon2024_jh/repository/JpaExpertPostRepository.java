@@ -21,7 +21,7 @@ public class JpaExpertPostRepository implements PostExpertRepository {
 
     @Override
     public List<ExpertPost> findAll() {
-        return em.createQuery("select p from ExpertPost p", ExpertPost.class).getResultList();
+        return em.createQuery("select p from ExpertPost p order by createTime desc", ExpertPost.class).getResultList();
     }
 
     @Override

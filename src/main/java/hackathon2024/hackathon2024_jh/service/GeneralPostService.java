@@ -29,8 +29,8 @@ public class GeneralPostService {
         return postGeneralRepository.save(generalPost);
     }
 
-    public List<GeneralPost> findAll() {
-        return postGeneralRepository.findAll();
+    public List<GeneralPost> findAll(String category) {
+        return postGeneralRepository.findAll(category);
     }
 
     public GeneralPost findPost(Long id) {

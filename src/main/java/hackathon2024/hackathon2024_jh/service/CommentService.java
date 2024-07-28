@@ -3,6 +3,7 @@ package hackathon2024.hackathon2024_jh.service;
 import hackathon2024.hackathon2024_jh.domain.Comment;
 import hackathon2024.hackathon2024_jh.domain.ExpertPost;
 import hackathon2024.hackathon2024_jh.domain.Member;
+import hackathon2024.hackathon2024_jh.domain.Post;
 import hackathon2024.hackathon2024_jh.repository.CommentRepository;
 import hackathon2024.hackathon2024_jh.repository.ExpertRepository;
 import hackathon2024.hackathon2024_jh.repository.MemberRepository;
@@ -42,5 +43,21 @@ public class CommentService {
         }
         return null;
     }
+
+    @Transactional
+    public void deleteComment(Long commentId, String token) {
+        Comment comment = commentRepository.findById(commentId);
+        Member member = memberService.tokenToMember(token);
+        if (member.getId() == comment.getWriterId()) {
+            commentRepository.deleteComment(comment);
+        }
+
+    }
+
+    public List<Comment> getExpertComments(Long postId) {
+        Post post = expertPostService.findPost(postId);
+        return commentRepository.findPostsComments(post);
+    }
+
 
 }

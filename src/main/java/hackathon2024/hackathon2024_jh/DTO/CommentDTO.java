@@ -46,21 +46,21 @@ public class CommentDTO {
 
     @Data
     public static class CommentCreateRequest {
-        private Long postId;
+//        private Long postId;
         private String token;
         private String content;
     }
 
     @Data
     public static class CommentUpdateRequest {
-        private Long commentId;
+        //private Long commentId;
         private String token;
         private String content;
     }
 
     @Data
     public static class CommentDeleteRequest {
-        private Long commentId;
+        //private Long commentId;
         private String token;
     }
 }

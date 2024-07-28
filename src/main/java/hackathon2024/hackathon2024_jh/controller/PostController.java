@@ -82,10 +82,10 @@ public class PostController {
     }
 
     //일반 게시글 전부 조회
-    @GetMapping("/general/postall")
-    public List<PostDTO.ResponsePostGeneral> generalPostAll(String token) {
+    @GetMapping("/general/postall/{category}")
+    public List<PostDTO.ResponsePostGeneral> generalPostAll(@PathVariable String category) {
         List<PostDTO.ResponsePostGeneral> responsePostGeneralList = new ArrayList<>();
-        for(GeneralPost generalPost : generalPostService.findAll()){
+        for(GeneralPost generalPost : generalPostService.findAll(category)){
             responsePostGeneralList.add(new PostDTO.ResponsePostGeneral(generalPost));
         }
         return responsePostGeneralList;

@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface PostGeneralRepository {
     GeneralPost save(GeneralPost generalPost);
-    List<GeneralPost> findAll();
+    List<GeneralPost> findAll(String category);
     GeneralPost findById(Long id);
     void delete(GeneralPost generalPost);
 }

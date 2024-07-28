@@ -22,8 +22,9 @@ public class JpaGeneralPostRepository implements PostGeneralRepository {
     }
 
     @Override
-    public List<GeneralPost> findAll() {
-        return em.createQuery("select p from GeneralPost p", GeneralPost.class).getResultList();
+    public List<GeneralPost> findAll(String category) {
+        return em.createQuery("select p from GeneralPost p where p.category = :c order by createTime desc ", GeneralPost.class)
+                .setParameter("c",category).getResultList();
     }
 
     @Override
