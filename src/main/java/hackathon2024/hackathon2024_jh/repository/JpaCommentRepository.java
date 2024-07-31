@@ -53,5 +53,11 @@ public class JpaCommentRepository implements CommentRepository{
         }
     }
 
+    @Override
+    public Long countCommentSize(Post post){
+        return em.createQuery("select count(c) from Comment c WHERE post.id = :post", Long.class)
+                .setParameter("post", post.getId()).getSingleResult();
+    }
+
 
 }

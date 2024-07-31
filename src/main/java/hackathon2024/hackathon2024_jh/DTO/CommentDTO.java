@@ -22,13 +22,15 @@ public class CommentDTO {
         // Constructor for CommentResponse based on Member
         public CommentResponse(Comment comment, User user) {
             this.id = comment.getId();
-            this.isFix = comment.getIsFix();
+
             this.content = comment.getContent();
             this.createDate = comment.getCreateDate();
             if (user instanceof Member) {
                 this.role = WriterType.MEMBER.name(); // 'MEMBER'
+                this.isFix = false;
             } else if (user instanceof Expert) {
                 this.role = WriterType.EXPERT.name(); // 'EXPERT'
+                this.isFix = comment.getIsFix();
             }
             this.writer = user.getNickname();
             this.writerId = user.getUserId();

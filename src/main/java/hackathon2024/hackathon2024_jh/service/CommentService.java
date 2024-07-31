@@ -16,8 +16,6 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class CommentService {
-    private final MemberRepository memberRepository;
-    private final ExpertRepository expertRepository;
     private final MemberService memberService;
     private final ExpertPostService expertPostService;
     private final CommentRepository commentRepository;
@@ -36,8 +34,12 @@ public class CommentService {
             comment.fixComment();
         }
         commentRepository.saveComment(comment);
+        System.out.println("댓글 저장 완료");
+        Long commentSize = commentRepository.countCommentSize(post);
+        post.setCommentSize(commentSize);
         return comment;
     }
+
 
 
     //(일반회원) 댓글 수정
@@ -56,6 +58,9 @@ public class CommentService {
     @Transactional
     public void deleteComment(Long commentId, String token) {
         Comment comment = commentRepository.findById(commentId);
+        Post post = comment.getPost();
+        Long commentSize = commentRepository.countCommentSize(post);
+        post.setCommentSize(commentSize);
         String role = memberService.MemberOrExpert(token);
         if(Objects.equals(role, "General")){
             Member member = memberService.tokenToMember(token);
@@ -69,6 +74,8 @@ public class CommentService {
                 commentRepository.deleteComment(comment);
             }
         }
+
+
 
 
 
@@ -90,6 +97,7 @@ public class CommentService {
         Post post = generalPostService.findPost(postId);
         return commentRepository.findFirstExpertComment(post);
     }
+
 
 
 }

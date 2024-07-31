@@ -1,11 +1,14 @@
 package hackathon2024.hackathon2024_jh.service;
 
+import hackathon2024.hackathon2024_jh.DTO.PostDTO;
 import hackathon2024.hackathon2024_jh.domain.*;
 import hackathon2024.hackathon2024_jh.repository.LikePostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -74,5 +77,16 @@ public class LikePostService {
 
         return likePost.isLike();
     }
+
+    public List<PostDTO.ResponsePost> findLikePost(User user) {
+        List<Post> likeArticles = likePostRepository.findLikeArticles(user.getId());
+        List<PostDTO.ResponsePost> posts = new ArrayList<>();
+        for(Post post : likeArticles) {
+            posts.add(new PostDTO.ResponsePost(post, true));
+        }
+        return posts;
+    }
+
+
 
 }

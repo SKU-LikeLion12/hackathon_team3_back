@@ -13,4 +13,7 @@ public interface CommentRepository {
     List<Comment> findPostsComments(Post Post);
 
     Comment findFirstExpertComment(Post post);
+
+
+    Long countCommentSize(Post post);
 }

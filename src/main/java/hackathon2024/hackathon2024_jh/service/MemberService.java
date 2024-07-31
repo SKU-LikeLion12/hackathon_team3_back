@@ -63,11 +63,19 @@ public class MemberService {
         return expertRepository.findByUserId(jwtUtility.validateToken(token).getSubject());
     }
 
+
     public User UserfindById(Long id){
         if (memberRepository.findById(id)==null){
             return expertRepository.findById(id);
         }
         return memberRepository.findById(id);
+    }
+
+    public User UserfindByUserId(String userId){
+        if (memberRepository.findByUserId(userId)==null){
+            return expertRepository.findByUserId(userId);
+        }
+        return memberRepository.findByUserId(userId);
     }
 
 

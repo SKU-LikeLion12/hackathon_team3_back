@@ -3,6 +3,7 @@ package hackathon2024.hackathon2024_jh.domain;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -21,8 +22,10 @@ public abstract class Post {
     @Column(columnDefinition = "TEXT")
     private String content;
 
+    @Setter
     private Long likeSize = 0L;
     private Long saveSize = 0L;
+    @Setter
     private Long commentSize = 0L;
 
     private LocalDateTime createTime;
@@ -42,7 +45,4 @@ public abstract class Post {
         this.updateTime = LocalDateTime.now();
     }
 
-    public void setLikeSize(Long likeSize) {
-        this.likeSize = likeSize;
-    }
 }

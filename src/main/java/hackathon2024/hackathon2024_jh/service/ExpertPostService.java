@@ -4,6 +4,7 @@ import hackathon2024.hackathon2024_jh.domain.Expert;
 import hackathon2024.hackathon2024_jh.domain.ExpertPost;
 import hackathon2024.hackathon2024_jh.domain.GeneralPost;
 import hackathon2024.hackathon2024_jh.domain.Member;
+import hackathon2024.hackathon2024_jh.repository.CommentRepository;
 import hackathon2024.hackathon2024_jh.repository.ExpertRepository;
 import hackathon2024.hackathon2024_jh.repository.MemberRepository;
 import hackathon2024.hackathon2024_jh.repository.PostExpertRepository;
@@ -17,9 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ExpertPostService {
-    private final ExpertRepository expertRepository;
     private final MemberService memberService;
-    private final JwtUtility jwtUtility;
     private final PostExpertRepository postExpertRepository;
 
     @Transactional

@@ -5,6 +5,7 @@ import hackathon2024.hackathon2024_jh.DTO.PostDTO;
 import hackathon2024.hackathon2024_jh.domain.ExpertPost;
 import hackathon2024.hackathon2024_jh.domain.GeneralPost;
 import hackathon2024.hackathon2024_jh.domain.LikePost;
+import hackathon2024.hackathon2024_jh.domain.User;
 import hackathon2024.hackathon2024_jh.service.ExpertPostService;
 import hackathon2024.hackathon2024_jh.service.GeneralPostService;
 import hackathon2024.hackathon2024_jh.service.LikePostService;
@@ -44,6 +45,7 @@ public class PostController {
     public List<PostDTO.ResponsePostExpert> expertPostAll(@RequestBody(required = false) PostDTO.isLogin request) {
         List<PostDTO.ResponsePostExpert> ResponsePostExpertList = new ArrayList<>();
         for(ExpertPost expertPost : expertPostService.findAll()){
+
             if (request != null) {    //로그인 한 상태
                 boolean isLike = likePostService.checkIslike(expertPost.getId(), request.getToken());
                 ResponsePostExpertList.add(new PostDTO.ResponsePostExpert(expertPost, isLike));
@@ -146,5 +148,19 @@ public class PostController {
     public LikePostDTO.LikePostResponse clickLike(@RequestBody LikePostDTO.LikeCreateRequest request, @PathVariable("postId") Long id){
         LikePost likePost = likePostService.Islike(id, request.getToken());
         return new LikePostDTO.LikePostResponse(likePost);
+    }
+
+    @GetMapping("/post/likes")
+    public List<PostDTO.ResponsePost> findlikeArticles(@RequestBody PostDTO.isLogin request){
+        String role = memberService.MemberOrExpert(request.getToken());
+        User user;
+        if(Objects.equals(role, "General")){
+             user = memberService.tokenToMember(request.getToken());
+        }
+        else{
+            user = memberService.tokenToExpert(request.getToken());
+        }
+        List<PostDTO.ResponsePost> responseArticles = likePostService.findLikePost(user);
+        return responseArticles;
     }
 }
