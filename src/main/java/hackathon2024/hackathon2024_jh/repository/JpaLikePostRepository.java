@@ -35,6 +35,8 @@ public class JpaLikePostRepository implements LikePostRepository {
         return em.find(LikePost.class, id);
     }
 
+
+
     @Override
     public void save(LikePost likePost) {
         if (likePost.getId()==0){

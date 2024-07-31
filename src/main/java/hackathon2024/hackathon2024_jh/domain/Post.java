@@ -24,6 +24,7 @@ public abstract class Post {
 
     @Setter
     private Long likeSize = 0L;
+    @Setter
     private Long saveSize = 0L;
     @Setter
     private Long commentSize = 0L;

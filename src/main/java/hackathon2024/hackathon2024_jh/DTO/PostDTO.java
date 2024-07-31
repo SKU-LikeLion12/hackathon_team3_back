@@ -30,9 +30,10 @@ public class PostDTO {
         private Boolean isExpertPost;
         private LocalDateTime createDate;
         private boolean isLike;
+        private boolean isSave;
         private boolean isChange;
 
-        public ResponsePostExpert(ExpertPost expertPost, Boolean isLike) {
+        public ResponsePostExpert(ExpertPost expertPost, Boolean isLike, Boolean isSave) {
             this.id = expertPost.getId();
             this.title = expertPost.getTitle();
             this.content = expertPost.getContent();
@@ -44,6 +45,7 @@ public class PostDTO {
             this.createDate = expertPost.getCreateTime();
             this.isChange = !expertPost.getCreateTime().equals(expertPost.getUpdateTime());
             this.isLike = isLike;
+            this.isSave = isSave;
         }
     }
 
@@ -78,9 +80,10 @@ public class PostDTO {
         private Boolean isExpertPost;
         private LocalDateTime createDate;
         private boolean isLike;
+        private boolean isSave;
         private boolean isChange;
 
-        public ResponsePostGeneral(GeneralPost generalPost, Boolean isLike) {
+        public ResponsePostGeneral(GeneralPost generalPost, Boolean isLike, Boolean isSave) {
             this.id = generalPost.getId();
             this.title = generalPost.getTitle();
             this.content = generalPost.getContent();
@@ -93,6 +96,7 @@ public class PostDTO {
             this.createDate = generalPost.getCreateTime();
             this.isChange = !generalPost.getCreateTime().equals(generalPost.getUpdateTime());
             this.isLike = isLike;
+            this.isSave = isSave;
         }
     }
 
@@ -128,9 +132,10 @@ public class PostDTO {
         private Boolean isExpertPost;
         private LocalDateTime createDate;
         private boolean isLike;
+        private boolean isSave;
         private boolean isChange;
 
-        public ResponsePost(Post post, Boolean isLike) {
+        public ResponsePost(Post post, Boolean isLike, Boolean isSave) {
             this.id = post.getId();
             this.title = post.getTitle();
             this.content = post.getContent();
@@ -141,17 +146,19 @@ public class PostDTO {
             this.createDate = post.getCreateTime();
             this.isChange = !post.getCreateTime().equals(post.getUpdateTime());
             this.isLike = isLike;
-
+            this.isSave = isSave;
             if (post instanceof ExpertPost) {
                 ExpertPost expertPost = (ExpertPost) post;
                 this.writer = expertPost.getWriter().getNickname();
                 this.isExpertPost = true;
+
                 this.category = "Expert Category"; // 혹은 다른 ExpertPost 관련 필드
             } else if (post instanceof GeneralPost) {
                 GeneralPost generalPost = (GeneralPost) post;
                 this.writer = generalPost.getWriter().getNickname(); // GeneralPost에 writer가 있다고 가정
                 this.isExpertPost = false;
                 this.category = categoryMap.get(generalPost.getCategory());
+
             } else {
                 throw new IllegalArgumentException("Unknown post type");
             }
