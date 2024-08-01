@@ -1,5 +1,6 @@
 package hackathon2024.hackathon2024_jh.service;
 
+import hackathon2024.hackathon2024_jh.DTO.PostDTO;
 import hackathon2024.hackathon2024_jh.domain.Expert;
 import hackathon2024.hackathon2024_jh.domain.ExpertPost;
 import hackathon2024.hackathon2024_jh.domain.GeneralPost;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -34,6 +36,16 @@ public class ExpertPostService {
     public ExpertPost findPost(Long id) {
         return postExpertRepository.findById(id);
     }
+
+    public List<PostDTO.ResponsePost> findPostByExpert(Expert expert) {
+        List<ExpertPost> myExpertPosts = postExpertRepository.findByExpert(expert);
+        List<PostDTO.ResponsePost> myPosts = new ArrayList<>();
+        for (ExpertPost expertPost : myExpertPosts) {
+            myPosts.add(new PostDTO.ResponsePost(expertPost,false,false));
+        }
+        return myPosts;
+    }
+
 
     @Transactional
     public ExpertPost updatePost(Long id, String title, String content, String token) {

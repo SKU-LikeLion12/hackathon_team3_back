@@ -181,6 +181,23 @@ public class PostController {
         return "삭제 완료";
     }
 
+    //내가 작성한 게시글 목록
+    @GetMapping("/post/myposts")
+    public List<PostDTO.ResponsePost> getPosts(@RequestBody(required = false) PostDTO.isLogin request) {
+        String role = memberService.MemberOrExpert(request.getToken());
+
+        if(Objects.equals(role, "General")){
+            Member member = memberService.tokenToMember(request.getToken());
+            return generalPostService.findPostByMember(member);
+        }
+        else{
+            Expert expert = memberService.tokenToExpert(request.getToken());
+            return expertPostService.findPostByExpert(expert);
+        }
+
+    }
+
+
     //좋아요 토글
     @PostMapping("/post/like/{postId}")
     public LikePostDTO.LikePostResponse clickLike(@RequestBody LikePostDTO.LikeCreateRequest request, @PathVariable("postId") Long id){
@@ -216,4 +233,6 @@ public class PostController {
         User user = memberService.tokenToMember(request.getToken());
         return savePostService.findSavePost(user);
     }
+
+
 }
