@@ -6,10 +6,12 @@ import hackathon2024.hackathon2024_jh.DTO.MailDTO;
 import hackathon2024.hackathon2024_jh.DTO.MessageDTO;
 import hackathon2024.hackathon2024_jh.domain.Expert;
 import hackathon2024.hackathon2024_jh.domain.Member;
+import hackathon2024.hackathon2024_jh.domain.User;
 import hackathon2024.hackathon2024_jh.repository.ExpertRepository;
 import hackathon2024.hackathon2024_jh.repository.MemberRepository;
 import hackathon2024.hackathon2024_jh.service.MemberService;
 import hackathon2024.hackathon2024_jh.service.MessageService;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -89,7 +91,6 @@ public class MemberController {
 
     @PostMapping("/check/sendSMS")
     public String sendSMS(@RequestBody MessageDTO.RequestMessage message) {
-        //return messageService.createRandomNumber();
         return messageService.sendSMS(message.getPhoneNumber());
     }
 
@@ -97,6 +98,21 @@ public class MemberController {
     public String sendSMS(@RequestBody MessageDTO.CertificationNum certification) {
         return messageService.verifySms(certification);
 
+    }
+
+
+    @GetMapping("/member/{userId}")
+    public MemberResponse getMember(@PathVariable("userId") String userId, @RequestBody Islogin request){
+        String role = memberService.MemberOrExpert(request.getToken());
+        User user = memberService.UserfindByUserId(userId);
+        return new MemberResponse(user, role);
+    }
+
+
+    @PutMapping("/member/changeName")
+    public MemberResponse ChangeName(@RequestBody MemberUpdateRequest request){
+        User findMember = memberService.changeName(request.getToken(), request.getNickname());
+        return new MemberResponse(findMember, "General");
     }
 
 

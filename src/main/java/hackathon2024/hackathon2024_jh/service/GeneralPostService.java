@@ -32,6 +32,21 @@ public class GeneralPostService {
         return postGeneralRepository.findAll(category);
     }
 
+    public List<GeneralPost> findAllLikeSize(String category) {
+        return postGeneralRepository.findAllLikedesc(category);
+    }
+
+    public List<GeneralPost> findAllCommentSize(String category) {
+        return postGeneralRepository.findAllCommentdesc(category);
+    }
+
+    public List<GeneralPost> findAllSaveSize(String category) {
+        return postGeneralRepository.findAllSavedesc(category);
+    }
+
+
+
+
     public GeneralPost findPost(Long id) {
         return postGeneralRepository.findById(id);
     }

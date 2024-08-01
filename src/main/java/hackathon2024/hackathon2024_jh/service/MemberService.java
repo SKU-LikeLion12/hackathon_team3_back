@@ -78,7 +78,20 @@ public class MemberService {
         return memberRepository.findByUserId(userId);
     }
 
+    @Transactional
+    public User changeName(String token, String nickname){
+        Member member = tokenToMember(token);
+        if(member==null){
+            Expert expert = tokenToExpert(token);
+            expert.setNickname(nickname);
+            return expert;
+        }
+        assert member != null;
+        member.setNickname(nickname);
 
+
+        return member;
+    }
 
 
     @Transactional

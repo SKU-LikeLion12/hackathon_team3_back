@@ -38,11 +38,15 @@ public class PostController {
     }
 
     //전문가 게시글 전부 조회
-    @GetMapping("/expert/postall")
-    public List<PostDTO.ResponsePostExpert> expertPostAll(@RequestBody(required = false) PostDTO.isLogin request) {
+    @GetMapping("/expert/postall/{order}")
+    public List<PostDTO.ResponsePostExpert> expertPostAll(@PathVariable int order, @RequestBody(required = false) PostDTO.isLogin request) {
         List<PostDTO.ResponsePostExpert> ResponsePostExpertList = new ArrayList<>();
-
-        for(ExpertPost expertPost : expertPostService.findAll()){
+        List<ExpertPost> expertPosts = new ArrayList<>();
+        if(order==1) expertPosts = expertPostService.findAll();
+        else if (order==2)expertPosts = expertPostService.findAllLikeSize();
+        else if (order==3)expertPosts = expertPostService.findAllCommentSize();
+        else if(order==4)expertPosts = expertPostService.findAllSaveSize();
+        for(ExpertPost expertPost : expertPosts){
             if (request != null) {//로그인 한 상태
                 User user;
                 String role = memberService.MemberOrExpert(request.getToken());
@@ -115,10 +119,17 @@ public class PostController {
     }
 
     //일반 게시글 전부 조회
-    @GetMapping("/general/postall/{category}")
-    public List<PostDTO.ResponsePostGeneral> generalPostAll(@PathVariable String category, @RequestBody(required = false) PostDTO.isLogin request) {
+    @GetMapping("/general/postall/{category}/{order}")
+    public List<PostDTO.ResponsePostGeneral> generalPostAll(@PathVariable String category,
+                                                            @PathVariable int order,
+                                                            @RequestBody(required = false) PostDTO.isLogin request) {
         List<PostDTO.ResponsePostGeneral> responsePostGeneralList = new ArrayList<>();
-        for(GeneralPost generalPost : generalPostService.findAll(category)){
+        List<GeneralPost> generalPosts = new ArrayList<>();
+        if(order==1) generalPosts = generalPostService.findAll(category);
+        else if (order==2)generalPosts = generalPostService.findAllLikeSize(category);
+        else if (order==3)generalPosts = generalPostService.findAllCommentSize(category);
+        else if(order==4)generalPosts = generalPostService.findAllSaveSize(category);
+        for(GeneralPost generalPost : generalPosts){
             if (request != null) {    //로그인 한 상태
                 User user;
                 String role = memberService.MemberOrExpert(request.getToken());
@@ -137,6 +148,7 @@ public class PostController {
         }
         return responsePostGeneralList;
     }
+
 
     // 일반 특정 게시글 조회
     @GetMapping("/general/post/{id}")
@@ -177,22 +189,24 @@ public class PostController {
     }
 
     @DeleteMapping("/general/post/{id}")
-    public String DeleteGeneralPost(@PathVariable Long id, @RequestBody PostDTO.RemovePost removePost) {
-        generalPostService.deletePost(id, removePost.getToken());
+    public String DeleteGeneralPost(@PathVariable Long id, @RequestHeader("Authorization") String token) {
+        token = token.substring(7);
+        generalPostService.deletePost(id, token);
         return "삭제 완료";
     }
 
     //내가 작성한 게시글 목록
     @GetMapping("/post/myposts")
-    public List<PostDTO.ResponsePost> getPosts(@RequestBody(required = false) PostDTO.isLogin request) {
-        String role = memberService.MemberOrExpert(request.getToken());
+    public List<PostDTO.ResponsePost> getPosts(@RequestHeader("Authorization") String token) {
+        token = token.substring(7);
+        String role = memberService.MemberOrExpert(token);
 
         if(Objects.equals(role, "General")){
-            Member member = memberService.tokenToMember(request.getToken());
+            Member member = memberService.tokenToMember(token);
             return generalPostService.findPostByMember(member);
         }
         else{
-            Expert expert = memberService.tokenToExpert(request.getToken());
+            Expert expert = memberService.tokenToExpert(token);
             return expertPostService.findPostByExpert(expert);
         }
 
@@ -215,27 +229,13 @@ public class PostController {
     }
 
 
+
     //좋아요 토글
     @PostMapping("/post/like/{postId}")
     public LikePostDTO.LikePostResponse clickLike(@RequestBody LikePostDTO.LikeCreateRequest request, @PathVariable("postId") Long id){
         LikePost likePost = likePostService.Islike(id, request.getToken());
         return new LikePostDTO.LikePostResponse(likePost);
     }
-
-//    //내가 좋아한 게시글 목록
-//    @GetMapping("/post/likes")
-//    public List<PostDTO.ResponsePost> findlikeArticles(@RequestBody PostDTO.isLogin request){
-//        String role = memberService.MemberOrExpert(request.getToken());
-//        User user;
-//        if(Objects.equals(role, "General")){
-//             user = memberService.tokenToMember(request.getToken());
-//        }
-//        else{
-//            user = memberService.tokenToExpert(request.getToken());
-//        }
-//        return likePostService.findLikePost(user);
-//    }
-
 
     //저장 토글
     @PostMapping("/post/save/{postId}")

@@ -3,6 +3,7 @@ package hackathon2024.hackathon2024_jh.domain;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -18,6 +19,7 @@ public abstract class User {
     @Column(unique = true)
     private String userId;  // njh123
     private String password;
+    @Setter
     private String nickname;    // 노주희
     private String birth;       // 20031013
     private String gender;      // male, female
@@ -41,4 +43,5 @@ public abstract class User {
     public boolean checkPassword(String rawPassword) {
         return passwordEncoder.matches(rawPassword, this.password);
     }
+
 }

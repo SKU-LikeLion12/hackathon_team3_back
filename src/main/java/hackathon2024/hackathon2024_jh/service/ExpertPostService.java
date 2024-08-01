@@ -29,8 +29,21 @@ public class ExpertPostService {
         ExpertPost expertPost = new ExpertPost(title, content, expert, null);
         return postExpertRepository.save(expertPost);
     }
+
     public List<ExpertPost> findAll() {
         return postExpertRepository.findAll();
+    }
+
+    public List<ExpertPost> findAllLikeSize() {
+        return postExpertRepository.findAllLikedesc();
+    }
+
+    public List<ExpertPost> findAllCommentSize() {
+        return postExpertRepository.findAllCommentdesc();
+    }
+
+    public List<ExpertPost> findAllSaveSize() {
+        return postExpertRepository.findAllSavedesc();
     }
 
     public ExpertPost findPost(Long id) {
