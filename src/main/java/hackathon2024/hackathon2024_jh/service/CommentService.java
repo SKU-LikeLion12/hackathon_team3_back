@@ -1,5 +1,6 @@
 package hackathon2024.hackathon2024_jh.service;
 
+import hackathon2024.hackathon2024_jh.DTO.PostDTO;
 import hackathon2024.hackathon2024_jh.domain.*;
 import hackathon2024.hackathon2024_jh.repository.CommentRepository;
 import hackathon2024.hackathon2024_jh.repository.ExpertRepository;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -96,6 +98,38 @@ public class CommentService {
     public Comment getFirstCommentFromGeneralPost(Long postId) {
         Post post = generalPostService.findPost(postId);
         return commentRepository.findFirstExpertComment(post);
+    }
+
+    //내가 작성한 댓글에 대한 게시글ID 조회(일반)
+    public List<PostDTO.ResponsePost> getPostsFromGeneralComment(Member member) {
+        List<Long> postIds = commentRepository.findMyCommentPostIds(member);
+        List<PostDTO.ResponsePost> posts = new ArrayList<>();
+        for (Long postId : postIds) {
+            GeneralPost generalPost = generalPostService.findPost(postId);
+            if(generalPost == null){
+                ExpertPost expertPost = expertPostService.findPost(postId);
+                posts.add(new PostDTO.ResponsePost(expertPost, false, false));
+                continue;
+            }
+            posts.add(new PostDTO.ResponsePost(generalPost, false, false));
+        }
+        return posts;
+    }
+
+    //내가 작성한 댓글에 대한 게시글ID 조회(전문가)
+    public List<PostDTO.ResponsePost> getPostsFromExpertComment(Expert expert) {
+        List<Long> postIds = commentRepository.findMyCommentPostIds(expert);
+        List<PostDTO.ResponsePost> posts = new ArrayList<>();
+        for (Long postId : postIds) {
+            ExpertPost post = expertPostService.findPost(postId);
+            if(post == null){
+                GeneralPost generalPost = generalPostService.findPost(postId);
+                posts.add(new PostDTO.ResponsePost(generalPost, false, false));
+                continue;
+            }
+            posts.add(new PostDTO.ResponsePost(post, false, false));
+        }
+        return posts;
     }
 
 

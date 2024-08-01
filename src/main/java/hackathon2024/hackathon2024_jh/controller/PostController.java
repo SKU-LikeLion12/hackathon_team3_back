@@ -21,6 +21,7 @@ public class PostController {
     private final GeneralPostService generalPostService;
     private final LikePostService likePostService;
     private final SavePostService savePostService;
+    private final CommentService commentService;
 
     //전문가 게시글 등록
     @PostMapping("/expert/post")
@@ -193,6 +194,22 @@ public class PostController {
         else{
             Expert expert = memberService.tokenToExpert(request.getToken());
             return expertPostService.findPostByExpert(expert);
+        }
+
+    }
+
+    //내가 댓글단 게시글 목록
+    @GetMapping("/post/mycommentposts")
+    public List<PostDTO.ResponsePost> getCommentPosts(@RequestBody(required = false) PostDTO.isLogin request) {
+        String role = memberService.MemberOrExpert(request.getToken());
+
+        if(Objects.equals(role, "General")){
+            Member member = memberService.tokenToMember(request.getToken());
+            return commentService.getPostsFromGeneralComment(member);
+        }
+        else{
+            Expert expert = memberService.tokenToExpert(request.getToken());
+            return commentService.getPostsFromExpertComment(expert);
         }
 
     }

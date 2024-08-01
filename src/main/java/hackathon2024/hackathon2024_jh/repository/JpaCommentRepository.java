@@ -2,6 +2,7 @@ package hackathon2024.hackathon2024_jh.repository;
 
 import hackathon2024.hackathon2024_jh.domain.Comment;
 import hackathon2024.hackathon2024_jh.domain.Post;
+import hackathon2024.hackathon2024_jh.domain.User;
 import hackathon2024.hackathon2024_jh.domain.WriterType;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -57,6 +58,13 @@ public class JpaCommentRepository implements CommentRepository{
     public Long countCommentSize(Post post){
         return em.createQuery("select count(c) from Comment c WHERE post.id = :post", Long.class)
                 .setParameter("post", post.getId()).getSingleResult();
+    }
+
+    @Override
+    public List<Long> findMyCommentPostIds(User user) {
+        return em.createQuery("select c.post.id from Comment c where c.writerId = :writerId", Long.class)
+                .setParameter("writerId", user.getId())
+                .getResultList();
     }
 
 
